@@ -12,7 +12,6 @@ public class ChatServer {
  }
  public  void startServer(){
      try{
-
             while(!serverSocket.isClosed()){
                 Socket socket=serverSocket.accept();
                 System.out.println("A new client has connected!");
@@ -20,8 +19,6 @@ public class ChatServer {
                 ClientHandler clientHandler=new ClientHandler(socket);
                 Thread thread=new Thread(clientHandler);
                 thread.start();
-
-
             }
      }catch (IOException e){
          closeServerSocket();

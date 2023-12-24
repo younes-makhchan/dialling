@@ -6,12 +6,9 @@ public class User implements Serializable {
     private int idUser;
     private  String username;
     private  String password;
-    public User(){
-
-    }
+    public User(){}
 
     public User(String username, String password) {
-        this.idUser = idUser;
         this.username = username;
         this.password = password;
     }

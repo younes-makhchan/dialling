@@ -10,7 +10,6 @@ public class DBSingleton {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/dialing","root","");
-
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }

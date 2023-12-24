@@ -1,4 +1,4 @@
-package com.exemple.dialing.presentation;
+package com.exemple.dialing.presentation.controllers;
 
 import com.exemple.dialing.dao.UserDaoImpl;
 import com.exemple.dialing.dao.entities.User;
@@ -7,13 +7,12 @@ import com.exemple.dialing.service.IServiceUserImpl;
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
-
-public class Client {
+public class ClientController {
     private Socket socket;
     private BufferedWriter bufferedWriter;
     private BufferedReader bufferedReader;
     private User user;
-    public  Client(Socket socket,User user){
+    public ClientController(Socket socket, User user){
         try{
             this.socket=socket;
             this.bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
@@ -22,7 +21,6 @@ public class Client {
 
         }catch (IOException e){
             closeEverything(socket,bufferedReader,bufferedWriter);
-
         }
     }
     public  void sendMessage(){
@@ -58,7 +56,6 @@ public class Client {
                         System.out.println(msgFromGroupChat);
                     }catch (IOException e){
                         closeEverything(socket,bufferedReader,bufferedWriter);
-
                     }
                 }
             }
@@ -79,7 +76,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
 
     public static void main(String[] args) throws IOException {
         Scanner scanner=new Scanner(System.in);
@@ -117,10 +113,8 @@ public class Client {
             }
         }while (user==null);
 
-
-
         Socket socket=new Socket("localhost",9090);
-        Client client=new Client(socket,user);
+        ClientController client=new ClientController(socket,user);
         client.listenForMessage();
         client.sendMessage();
     }

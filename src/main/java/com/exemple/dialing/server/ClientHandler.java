@@ -37,7 +37,6 @@ public class ClientHandler implements  Runnable{
             e.printStackTrace();
             closeEverything(socket,bufferedReader,bufferedWriter);
         }
-
     }
     @Override
     public void run() {
@@ -90,16 +89,12 @@ public class ClientHandler implements  Runnable{
                 this.bufferedWriter.flush();
             } catch (IOException e) {
                 closeEverything(socket,bufferedReader,bufferedWriter);
-
             }
-
-
         }
     }
     public  void removeClientHandler(){
         clientHandlers.remove(this);
         broadcastMessage("SERVER: "+user.getUsername()+" has left the chat!" );
-
     }
     public  void closeEverything(Socket socket,BufferedReader bufferedReader,BufferedWriter bufferedWriter){
         removeClientHandler();

@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageDaoImpl implements MessageDao {
-
-
     @Override
     public void save(Message o) {
         Connection connection=DBSingleton.getConnection();
@@ -24,7 +22,6 @@ public class MessageDaoImpl implements MessageDao {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
@@ -83,8 +80,6 @@ public class MessageDaoImpl implements MessageDao {
                 message.setID_MESSAGE(rs.getInt("ID_MESSAGE"));
                 message.setMessage(rs.getString("message"));
 
-
-
                 PreparedStatement pstm1= connection.prepareStatement("SELECT * FROM user WHERE "+"ID_USER=?");
                 pstm1.setInt(1,rs.getInt("ID_USER"));
                 ResultSet rs1 =pstm1.executeQuery();
@@ -102,11 +97,8 @@ public class MessageDaoImpl implements MessageDao {
         }
         return messages;
     }
-
     @Override
     public void update(Message o) {
         System.out.println("updating the messages");
     }
-
-
 }
