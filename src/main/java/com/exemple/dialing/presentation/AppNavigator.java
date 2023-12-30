@@ -40,7 +40,7 @@ public class AppNavigator {
 
 
 
-    public static void loadChatScene(User selectedUser) {
+    public static void loadChatScene(User selectedUser,User authenticatedUser) {
         try {
             FXMLLoader loader = new FXMLLoader(AppNavigator.class.getResource("/com/exemple/dialing/views/Chat.fxml"));
             Parent root = loader.load();
@@ -49,7 +49,7 @@ public class AppNavigator {
             // Get the controller instance and set the selected user
             ChatController chatController = loader.getController();
             chatController.setSelectedUser(selectedUser);
-
+            chatController.setAuthenticatedUser(authenticatedUser);
             stage.setScene(new Scene(root));
             stage.setTitle("Chat");
             stage.show();

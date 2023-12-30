@@ -27,6 +27,7 @@ public class LoginController {
             // Authentication successful
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Login successful!");
+            ClientController.socketConnect(authenticatedUser);
             AppNavigator.loadUserListScene(authenticatedUser);
             alert.show();
         } else {

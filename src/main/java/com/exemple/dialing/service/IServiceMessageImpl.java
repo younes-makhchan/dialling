@@ -26,4 +26,7 @@ public class IServiceMessageImpl implements IMessageService {
     public void updateMessage(Message c) {
             messageDao.update(c);
     }
+    public  List<Message> getConversation(int idSender,int idReceiver){
+      return   messageDao.filterSenderAndReceiver(idSender,idReceiver);
+    }
 }

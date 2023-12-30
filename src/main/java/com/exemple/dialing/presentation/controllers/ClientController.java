@@ -6,17 +6,20 @@ import com.exemple.dialing.service.IServiceUserImpl;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.Connection;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 public class ClientController {
     private static Socket socket;
     private static BufferedWriter bufferedWriter;
+    private  static PrintWriter pr;
     private static BufferedReader bufferedReader;
     private static User user;
     public ClientController(Socket socket, User user){
         try{
             ClientController.socket =socket;
             bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
-            bufferedWriter=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())) ;
+             pr=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true) ;
             ClientController.user =user;
 
         }catch (IOException e){
@@ -24,21 +27,23 @@ public class ClientController {
         }
     }
     public static void sendMessage(String message){
-        try{
-            while (socket.isConnected()){
+        try {
+            if (socket.isConnected()){
                 if (!message.trim().isEmpty()) {
-                    bufferedWriter.write(message);
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
+                   bufferedWriter.write(message);
+                   bufferedWriter.newLine();
+                   bufferedWriter.flush();
+
                 } else {
                     System.out.println("Please enter a non-empty message.");
                 }
             }
-        }catch (IOException e){
-            closeEverything(socket,bufferedReader,bufferedWriter);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+
     }
-    public  static  void listenForMessage(Consumer<String> messageConsumer){
+        public  static  void listenForMessage(BiConsumer<String,String> messageConsumer){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -47,7 +52,10 @@ public class ClientController {
                     try{
                         msgReceived=bufferedReader.readLine();
                         System.out.println(msgReceived);
-                        messageConsumer.accept(msgReceived);
+                        String [] splits=msgReceived.split("=>");
+                        String usernameSender =splits[0];
+                        String messageReceived = splits[1];
+                        messageConsumer.accept(usernameSender,messageReceived);
                     }catch (IOException e){
                         closeEverything(socket,bufferedReader,bufferedWriter);
                     }
@@ -112,4 +120,18 @@ public class ClientController {
 //        client.listenForMessage();
 //        client.sendMessage();
 //    }
+    public  static void  socketConnect(User authenticateduser){
+        Socket socket= null;
+        try {
+            socket = new Socket("localhost",9090);
+            ClientController.socket =socket;
+            bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
+            bufferedWriter=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())) ;
+            ClientController.user =authenticateduser;
+            bufferedWriter.write(authenticateduser.getIdUser());
+            bufferedWriter.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

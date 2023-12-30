@@ -3,20 +3,30 @@ package com.exemple.dialing.dao.entities;
 public class Message {
     private int idMsg;
     private String message;
-    private User sender;
+    private User sender,receiver;
 
     public Message() {}
 
-    public Message(String message, User sender) {
+    public Message( String message, User sender, User receiver) {
         this.message = message;
         this.sender = sender;
+        this.receiver = receiver;
     }
-    public int getID_MESSAGE() {
+
+    public int getIdMsg() {
         return idMsg;
     }
 
-    public void setID_MESSAGE(int idMsg) {
+    public void setIdMsg(int idMsg) {
         this.idMsg = idMsg;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public User getSender() {
@@ -27,11 +37,11 @@ public class Message {
         this.sender = sender;
     }
 
-    public String getMessage() {
-        return message;
+    public User getReceiver() {
+        return receiver;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setReceiver(User receiver) {
+        this.receiver = receiver;
     }
 }

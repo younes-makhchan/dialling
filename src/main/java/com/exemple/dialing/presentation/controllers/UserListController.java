@@ -47,7 +47,7 @@ public class UserListController {
 
         if (selectedUser != null) {
             // Start the chat with the selected user
-            AppNavigator.loadChatScene(selectedUser);
+            AppNavigator.loadChatScene(selectedUser,authenticatedUser);
         } else {
             // No user selected, display an error message or take appropriate action
             System.out.println("Please select a user to start the chat.");

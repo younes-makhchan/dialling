@@ -10,10 +10,12 @@ import com.exemple.dialing.service.IServiceUserImpl;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientHandler implements  Runnable{
-    public  static ArrayList<ClientHandler> clientHandlers=new ArrayList<>();
+    public  static Map<Integer,ClientHandler> clientHandlers=new HashMap<>();
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
@@ -28,11 +30,9 @@ public class ClientHandler implements  Runnable{
             this.bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
             this.bufferedWriter=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())) ;
             int idUser=bufferedReader.read();
-            System.out.println("use id :"+idUser);
+            System.out.println("user id :"+idUser);
             this.user=iServiceUser.getUserbyId(idUser);
-            clientHandlers.add(this);
-            loadOldMessages();
-            broadcastMessage("Server: "+user.getUsername()+" has entered the chat!");
+            clientHandlers.put(idUser,this);
         }catch (IOException e){
             e.printStackTrace();
             closeEverything(socket,bufferedReader,bufferedWriter);
@@ -43,58 +43,64 @@ public class ClientHandler implements  Runnable{
         while(socket.isConnected()){
             try{
                 String messageFromClient=bufferedReader.readLine();
-                Message msg=new Message(messageFromClient, user);
-                iServiceMessage.addMessage(msg);
-                broadcastMessage(messageFromClient);
+                System.out.println(messageFromClient);
+
+                //devide  between the two
+                String []splits=messageFromClient.split(  "=>");
+
+                //get received user
+                int receiverUserId=Integer.parseInt(splits[0]);
+                User receiverUser=iServiceUser.getUserbyId(receiverUserId);
+                String messageFromSender=splits[1];
+                if(messageFromSender.equals("$$loadMessages$$")){
+                        loadOldMessages(receiverUserId);
+                }else{
+                    //add message
+
+                    Message msg=new Message(messageFromSender, user,receiverUser);
+                    iServiceMessage.addMessage(msg);
+
+                    sendMessage(this.user,receiverUser,messageFromSender);
+                }
+
             }catch (IOException e){
                 closeEverything(socket,bufferedReader,bufferedWriter);
                 break;
             }
         }
     }
+    // sendMessage need the  username Sender
+    public  void sendMessage(User sender,User receiverUserId,String messageToSend){
 
-    public  void broadcastMessage(String messageToSend){
-        for(ClientHandler  clientHandler:clientHandlers){
 
-            try{
-                if(!clientHandler.user.getUsername().equals(this.user.getUsername())){
-                    System.out.println(messageToSend.toLowerCase().contains("server"));
-                    if(messageToSend.toLowerCase().contains("server")){
-                        clientHandler.bufferedWriter.write(messageToSend);
+        try {
+            ClientHandler clientHandler=clientHandlers.get(receiverUserId.getIdUser());
+            if(clientHandler!=null){
+                clientHandler.bufferedWriter.write(sender.getUsername()+"=>"+messageToSend);
+                clientHandler.bufferedWriter.newLine();
+                clientHandler.bufferedWriter.flush();
+            }
 
-                    }else {
-                        String sender=this.user.getUsername();
-                        clientHandler.bufferedWriter.write(sender+":"+messageToSend);
-                    }
-                    clientHandler.bufferedWriter.newLine();
-                    clientHandler.bufferedWriter.flush();
-                }
+
             }catch (IOException e){
 
                 closeEverything(socket,bufferedReader,bufferedWriter);
             }
-        }
+
     }
-    public  void loadOldMessages()  {
-        List<Message> msgs= iServiceMessage.getAllMessages();
+    //load allmessages
+    public  void loadOldMessages(int receiverUserId)  {
+
+        List<Message> msgs= iServiceMessage.getConversation(user.getIdUser(),receiverUserId);
         for(Message msg:msgs){
-            String sender="Me";
-            if(msg.getSender().getIdUser()!=this.user.getIdUser()){
-                sender=msg.getSender().getUsername();
-            }
-            String formattedMsg=sender+":"+msg.getMessage();
-            try {
-                this.bufferedWriter.write(formattedMsg);
-                this.bufferedWriter.newLine();
-                this.bufferedWriter.flush();
-            } catch (IOException e) {
-                closeEverything(socket,bufferedReader,bufferedWriter);
-            }
+            System.out.println(receiverUserId+" "+msg.getMessage());
+
+            sendMessage(msg.getSender(),user,msg.getMessage());
         }
     }
     public  void removeClientHandler(){
-        clientHandlers.remove(this);
-        broadcastMessage("SERVER: "+user.getUsername()+" has left the chat!" );
+//        clientHandlers.remove(this);
+//        broadcastMessage("SERVER: "+user.getUsername()+" has left the chat!" );
     }
     public  void closeEverything(Socket socket,BufferedReader bufferedReader,BufferedWriter bufferedWriter){
         removeClientHandler();
