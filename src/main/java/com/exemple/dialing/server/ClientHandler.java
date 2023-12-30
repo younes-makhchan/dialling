@@ -9,10 +9,7 @@ import com.exemple.dialing.service.IServiceUserImpl;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClientHandler implements  Runnable{
     public  static Map<Integer,ClientHandler> clientHandlers=new HashMap<>();
@@ -43,7 +40,6 @@ public class ClientHandler implements  Runnable{
         while(socket.isConnected()){
             try{
                 String messageFromClient=bufferedReader.readLine();
-                System.out.println(messageFromClient);
 
                 //devide  between the two
                 String []splits=messageFromClient.split(  "=>");
@@ -52,9 +48,13 @@ public class ClientHandler implements  Runnable{
                 int receiverUserId=Integer.parseInt(splits[0]);
                 User receiverUser=iServiceUser.getUserbyId(receiverUserId);
                 String messageFromSender=splits[1];
-                if(messageFromSender.equals("$$loadMessages$$")){
+                if(messageFromSender.equals("$$disconnect$$")){
+                    disconnectClient();
+                }else if(messageFromSender.equals("$$loadMessages$$")){
                         loadOldMessages(receiverUserId);
-                }else{
+                } else if (messageFromSender.equals("$$LoadOnlineUsers$$")) {
+                    loadOnlineUsers();
+                } else{
                     //add message
 
                     Message msg=new Message(messageFromSender, user,receiverUser);
@@ -70,11 +70,11 @@ public class ClientHandler implements  Runnable{
         }
     }
     // sendMessage need the  username Sender
-    public  void sendMessage(User sender,User receiverUserId,String messageToSend){
+    public  void sendMessage(User sender,User receiverUser,String messageToSend){
 
 
         try {
-            ClientHandler clientHandler=clientHandlers.get(receiverUserId.getIdUser());
+            ClientHandler clientHandler=clientHandlers.get(receiverUser.getIdUser());
             if(clientHandler!=null){
                 clientHandler.bufferedWriter.write(sender.getUsername()+"=>"+messageToSend);
                 clientHandler.bufferedWriter.newLine();
@@ -93,17 +93,30 @@ public class ClientHandler implements  Runnable{
 
         List<Message> msgs= iServiceMessage.getConversation(user.getIdUser(),receiverUserId);
         for(Message msg:msgs){
-            System.out.println(receiverUserId+" "+msg.getMessage());
 
             sendMessage(msg.getSender(),user,msg.getMessage());
         }
     }
-    public  void removeClientHandler(){
-//        clientHandlers.remove(this);
-//        broadcastMessage("SERVER: "+user.getUsername()+" has left the chat!" );
+    public void loadOnlineUsers() {
+        List<ClientHandler> onlineHandlers = new ArrayList<>(clientHandlers.values());
+        StringBuilder usernamesBuilder = new StringBuilder();
+
+        // Iterate over the values and concatenate usernames
+        for (ClientHandler handler : onlineHandlers) {
+            User onlineUser = handler.getUser();
+            usernamesBuilder.append("%/0%").append(onlineUser.getUsername());
+        }
+
+        // The concatenated usernames string
+        String concatenatedUsernames = usernamesBuilder.toString();
+        sendMessage(user,user,concatenatedUsernames);
+    }
+
+    public  void disconnectClient(){
+        clientHandlers.remove(user.getIdUser());
     }
     public  void closeEverything(Socket socket,BufferedReader bufferedReader,BufferedWriter bufferedWriter){
-        removeClientHandler();
+        disconnectClient();
         try{
             if(bufferedReader!=null){
                 bufferedReader.close();
@@ -117,5 +130,9 @@ public class ClientHandler implements  Runnable{
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public User getUser() {
+        return user;
     }
 }

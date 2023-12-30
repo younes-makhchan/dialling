@@ -17,6 +17,9 @@ public class ChatController {
     @FXML private ListView<String> chatListView;
     private User selectedUser,authenticatedUser;
     private ObservableList<String> chatMessages;
+    final  String sender="Me";
+    private boolean shouldContinueListening = true;
+
     @FXML
     private void initialize() {
         chatMessages = FXCollections.observableArrayList();
@@ -31,9 +34,17 @@ public class ChatController {
                     setText(null);
                     setStyle("");
                 } else {
-                    setText(item);
-                    if (item.startsWith("Me :")) {
+                    System.out.println();
+                    String [] split=item.split(":");
+                    String userName=split[0];
+                    String message=split[1];
+
+                    setText(message);
+
+                    if (userName.startsWith("Me")) {
+
                         setStyle("-fx-text-fill: green; -fx-font-size: 18; -fx-alignment: CENTER-RIGHT;");
+
                     } else {
                         setStyle("-fx-text-fill: blue; -fx-font-size: 18; -fx-alignment: CENTER-LEFT;");
                     }
@@ -51,7 +62,7 @@ public class ChatController {
             String messageToSend=selectedUser.getIdUser()+"=>"+message;
             // Implement your message sending logic here
             ClientController.sendMessage(messageToSend);
-            sendMessageUI(message);
+            sendMessageUI(sender,message);
             // Clear the message field after sending
             messageField.clear();
         }
@@ -60,8 +71,14 @@ public class ChatController {
     public void  listenForMessageUI(){
         ClientController.listenForMessage((String usernameSender,String messageReceived)->{
             if(usernameSender.equals(authenticatedUser.getUsername()))usernameSender="Me";
-            String formattedReceivedMessage = usernameSender + " : " + messageReceived;
-            Platform.runLater(()->{ chatMessages.add(formattedReceivedMessage);});
+            String finalUsernameSender = usernameSender;
+            Platform.runLater(() -> {
+                if (shouldContinueListening) {
+                    sendMessageUI(finalUsernameSender, messageReceived);
+                }
+            });
+
+            return !shouldContinueListening;
         });
     }
 
@@ -74,14 +91,15 @@ public class ChatController {
         this.authenticatedUser = authenticatedUser;
     }
 
-    private void sendMessageUI(String message) {
+    private void sendMessageUI(String sender,String message) {
         // Assuming you have a service layer to handle message sending
-        String sender = "Me";
-        String formattedMessage = sender + " : " + message;
+        String formattedMessage = sender + ":" + message;
         chatMessages.add(formattedMessage);
     }
     @FXML
     private void goBackListUsers(ActionEvent event) {
+        shouldContinueListening = false;
+
         AppNavigator.loadUserListScene(authenticatedUser);
     }
 }
