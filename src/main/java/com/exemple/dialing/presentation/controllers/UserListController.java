@@ -30,8 +30,6 @@ public class UserListController {
         Platform.runLater(this::loadUserList);
     }
 
-
-
     private void loadUserList() {
         // Assuming you have a service layer to interact with your database
         IServiceUserImpl userService = new IServiceUserImpl(new UserDaoImpl());
