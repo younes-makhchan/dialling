@@ -6,35 +6,28 @@ import com.exemple.dialing.service.IServiceUserImpl;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.function.Consumer;
 public class ClientController {
-    private Socket socket;
-    private BufferedWriter bufferedWriter;
-    private BufferedReader bufferedReader;
-    private User user;
+    private static Socket socket;
+    private static BufferedWriter bufferedWriter;
+    private static BufferedReader bufferedReader;
+    private static User user;
     public ClientController(Socket socket, User user){
         try{
-            this.socket=socket;
-            this.bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
-            this.bufferedWriter=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())) ;
-            this.user=user;
+            ClientController.socket =socket;
+            bufferedReader=new BufferedReader(new InputStreamReader(socket.getInputStream())) ;
+            bufferedWriter=new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())) ;
+            ClientController.user =user;
 
         }catch (IOException e){
             closeEverything(socket,bufferedReader,bufferedWriter);
         }
     }
-    public  void sendMessage(){
-        String username=user.getUsername();
+    public static void sendMessage(String message){
         try{
-            System.out.println("username : "+username);
-            bufferedWriter.write(user.getIdUser());
-            bufferedWriter.flush();
-
-            Scanner scanner=new Scanner(System.in);
             while (socket.isConnected()){
-                String messageToSend=scanner.nextLine();
-                if (!messageToSend.trim().isEmpty()) {
-                    bufferedWriter.write(messageToSend);
+                if (!message.trim().isEmpty()) {
+                    bufferedWriter.write(message);
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
                 } else {
@@ -45,15 +38,16 @@ public class ClientController {
             closeEverything(socket,bufferedReader,bufferedWriter);
         }
     }
-    public  void listenForMessage(){
+    public  static  void listenForMessage(Consumer<String> messageConsumer){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String msgFromGroupChat;
+                String msgReceived;
                 while(socket.isConnected()){
                     try{
-                        msgFromGroupChat=bufferedReader.readLine();
-                        System.out.println(msgFromGroupChat);
+                        msgReceived=bufferedReader.readLine();
+                        System.out.println(msgReceived);
+                        messageConsumer.accept(msgReceived);
                     }catch (IOException e){
                         closeEverything(socket,bufferedReader,bufferedWriter);
                     }
@@ -61,7 +55,7 @@ public class ClientController {
             }
         }).start();
     }
-    public  void closeEverything(Socket socket,BufferedReader bufferedReader,BufferedWriter bufferedWriter){
+    public static void closeEverything(Socket socket,BufferedReader bufferedReader,BufferedWriter bufferedWriter){
         try{
             if(bufferedReader!=null){
                 bufferedReader.close();
@@ -77,45 +71,45 @@ public class ClientController {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        Scanner scanner=new Scanner(System.in);
-        User user=null;
-        do{
-            System.out.println("Welcome to dialing app: \n 1-login ,2-register ");
-            int choice=scanner.nextInt();
-            scanner.nextLine();
-            if(choice==1){
-                System.out.println("give me ur username :");
-                String usernameLogin=scanner.nextLine();
-                System.out.println("give me ur password :");
-                String passwordLogin=scanner.nextLine();
-                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
-                user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
-                if(user==null){
-                    System.out.println("wrong password or username");
-                }else{
-                    System.out.println("Login success");
-                }
-            }else{
-                System.out.println("give me ur username :");
-                String usernameLogin=scanner.nextLine();
-                System.out.println("give me ur password");
-                String passwordLogin=scanner.nextLine();
-                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
-                if(iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin)==null){
-                    user=new User(usernameLogin,passwordLogin);
-                    iServiceUser.addUser(user);
-                    user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
-                    System.out.println("Registration sucess");
-                }else{
-                    System.out.println("user already exists with that username");
-                }
-            }
-        }while (user==null);
-
-        Socket socket=new Socket("localhost",9090);
-        ClientController client=new ClientController(socket,user);
-        client.listenForMessage();
-        client.sendMessage();
-    }
+//    public static void main(String[] args) throws IOException {
+//        Scanner scanner=new Scanner(System.in);
+//        User user=null;
+//        do{
+//            System.out.println("Welcome to dialing app: \n 1-login ,2-register ");
+//            int choice=scanner.nextInt();
+//            scanner.nextLine();
+//            if(choice==1){
+//                System.out.println("give me ur username :");
+//                String usernameLogin=scanner.nextLine();
+//                System.out.println("give me ur password :");
+//                String passwordLogin=scanner.nextLine();
+//                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
+//                user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
+//                if(user==null){
+//                    System.out.println("wrong password or username");
+//                }else{
+//                    System.out.println("Login success");
+//                }
+//            }else{
+//                System.out.println("give me ur username :");
+//                String usernameLogin=scanner.nextLine();
+//                System.out.println("give me ur password");
+//                String passwordLogin=scanner.nextLine();
+//                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
+//                if(iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin)==null){
+//                    user=new User(usernameLogin,passwordLogin);
+//                    iServiceUser.addUser(user);
+//                    user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
+//                    System.out.println("Registration sucess");
+//                }else{
+//                    System.out.println("user already exists with that username");
+//                }
+//            }
+//        }while (user==null);
+//
+//        Socket socket=new Socket("localhost",9090);
+//        ClientController client=new ClientController(socket,user);
+//        client.listenForMessage();
+//        client.sendMessage();
+//    }
 }

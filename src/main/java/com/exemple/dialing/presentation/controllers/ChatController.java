@@ -23,17 +23,26 @@ public class ChatController {
     private void handleSend(ActionEvent event) {
         String message = messageField.getText().trim();
         if (!message.isEmpty()) {
+            String messageTosend=selectedUser+"=>"+message;
             // Implement your message sending logic here
-            sendMessage(message);
+//            ClientController.sendMessage(messageTosend);
+            sendMessageUI(message);
+
 
             // Clear the message field after sending
             messageField.clear();
         }
     }
+    public void  listenForMessageUI(){
+        ClientController.listenForMessage((String messageReceived)->{
+
+        });
+    }
+
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
     }
-    private void sendMessage(String message) {
+    private void sendMessageUI(String message) {
         // Assuming you have a service layer to handle message sending
         String sender = "Me";
         String formattedMessage = sender + ": " + message;
