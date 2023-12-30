@@ -104,7 +104,7 @@ public class UserListController {
     @FXML
     private void handleLogout(ActionEvent event) {
         AppNavigator.loadLoginScene();
-        sendMessage(authenticatedUser.getIdUser()+"=>"+"$$disconnect$$");
+        sendMessage(authenticatedUser.getIdUser(),"$$disconnect$$");
     }
     @FXML
     private void handleRefresh(ActionEvent event) {

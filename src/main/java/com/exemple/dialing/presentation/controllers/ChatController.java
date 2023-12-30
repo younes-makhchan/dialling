@@ -59,9 +59,8 @@ public class ChatController {
     private void handleSend(ActionEvent event) {
         String message = messageField.getText().trim();
         if (!message.isEmpty()) {
-            String messageToSend=selectedUser.getIdUser()+"=>"+message;
             // Implement your message sending logic here
-            ClientController.sendMessage(messageToSend);
+            ClientController.sendMessage(selectedUser.getIdUser(),message);
             sendMessageUI(sender,message);
             // Clear the message field after sending
             messageField.clear();
@@ -84,7 +83,7 @@ public class ChatController {
 
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
-        ClientController.sendMessage(selectedUser.getIdUser()+"=>$$loadMessages$$");
+        ClientController.sendMessage(selectedUser.getIdUser(),"$$loadMessages$$");
     }
 
     public void setAuthenticatedUser(User authenticatedUser) {

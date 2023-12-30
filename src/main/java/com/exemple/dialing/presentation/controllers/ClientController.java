@@ -33,9 +33,10 @@ public class ClientController {
             closeEverything(socket,bufferedReader,bufferedWriter);
         }
     }
-    public static void sendMessage(String message){
+    public static void sendMessage(int userId,String message){
+                String sendingMessage=userId+"=>"+message;
                 if (!message.trim().isEmpty()) {
-                    sendMessagePrivate(message);
+                    sendMessagePrivate(sendingMessage);
 
                 } else {
                     System.out.println("Please enter a non-empty message.");
