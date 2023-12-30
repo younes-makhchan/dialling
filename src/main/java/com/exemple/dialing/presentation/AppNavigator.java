@@ -35,7 +35,6 @@ public class AppNavigator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -46,6 +45,7 @@ public class AppNavigator {
             FXMLLoader loader = new FXMLLoader(AppNavigator.class.getResource("/com/exemple/dialing/views/Chat.fxml"));
             Parent root = loader.load();
 
+            System.out.println(selectedUser);
             // Get the controller instance and set the selected user
             ChatController chatController = loader.getController();
             chatController.setSelectedUser(selectedUser);
