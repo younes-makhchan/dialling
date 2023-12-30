@@ -42,21 +42,22 @@ public class AppNavigator {
 
 
     public static void loadChatScene(User selectedUser) {
-        FXMLLoader loader = loadScene("/com/exemple/dialing/views/Chat.fxml", "Chat");
-        Parent root = null;
         try {
-            root = loader.load();
+            FXMLLoader loader = new FXMLLoader(AppNavigator.class.getResource("/com/exemple/dialing/views/Chat.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller instance and set the selected user
+            ChatController chatController = loader.getController();
+            chatController.setSelectedUser(selectedUser);
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Chat");
+            stage.show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        ChatController chatController = loader.getController();
-        chatController.setSelectedUser(selectedUser);
-
-        stage.setScene(new Scene(root));
-        stage.setTitle("Chat");
-        stage.show();
     }
+
 
 
 
