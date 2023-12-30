@@ -31,6 +31,12 @@
                     <Font size="14.0" />
                 </font>
             </Button>
+            <Button fx:id="handleRefresh" layoutX="400.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleRefresh" text="Refresh Users"
+                    style=" -fx-font-size: 14px;">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
         </children>
     </AnchorPane>
 
