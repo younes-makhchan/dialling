@@ -37,9 +37,6 @@ public class AppNavigator {
         }
     }
 
-
-
-
     public static void loadChatScene(User selectedUser,User authenticatedUser) {
         try {
             FXMLLoader loader = new FXMLLoader(AppNavigator.class.getResource("/com/exemple/dialing/views/Chat.fxml"));
@@ -57,11 +54,6 @@ public class AppNavigator {
             throw new RuntimeException(e);
         }
     }
-
-
-
-
-
 
     private static FXMLLoader loadScene(String fxml, String title) {
         FXMLLoader loader=null;

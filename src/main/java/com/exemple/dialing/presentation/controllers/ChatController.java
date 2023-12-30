@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
@@ -19,6 +20,27 @@ public class ChatController {
     private void initialize() {
         chatMessages = FXCollections.observableArrayList();
         chatListView.setItems(chatMessages);
+        // Set a custom cell factory to control the appearance of each item in the ListView
+        chatListView.setCellFactory(list -> new ListCell<String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if (item.startsWith("Me:")) {
+                        setStyle("-fx-text-fill: green; -fx-font-size: 18; -fx-alignment: CENTER-RIGHT;");
+                    } else {
+                        setStyle("-fx-text-fill: blue; -fx-font-size: 18; -fx-alignment: CENTER-LEFT;");
+                    }
+                }
+            }
+        });
+        // Set the background color of the ListView
+        chatListView.setStyle("-fx-control-inner-background: black;");
         listenForMessageUI();
     }
     @FXML
@@ -38,16 +60,13 @@ public class ChatController {
         ClientController.listenForMessage((String usernameSender,String messageReceived)->{
             if(usernameSender.equals(authenticatedUser.getUsername()))usernameSender="Me";
             String formattedReceivedMessage = usernameSender + " : " + messageReceived;
-            Platform.runLater(()->{
-                chatMessages.add(formattedReceivedMessage);
-            });
+            Platform.runLater(()->{ chatMessages.add(formattedReceivedMessage);});
         });
     }
 
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
         ClientController.sendMessage(selectedUser.getIdUser()+"=>$$loadMessages$$");
-
     }
 
     public void setAuthenticatedUser(User authenticatedUser) {
