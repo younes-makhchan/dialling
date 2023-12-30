@@ -27,7 +27,7 @@ public class LoginController {
             // Authentication successful
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setContentText("Login successful!");
-            AppNavigator.loadChatScene();
+            AppNavigator.loadUserListScene(authenticatedUser);
             alert.show();
         } else {
             // Authentication failed
