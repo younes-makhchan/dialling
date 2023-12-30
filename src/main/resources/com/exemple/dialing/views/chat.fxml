@@ -13,6 +13,13 @@
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.exemple.dialing.presentation.controllers.ChatController">
+   <top>
+      <Button onAction="#goBackListUsers" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="Back">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Button>
+   </top>
    <bottom>
       <HBox alignment="CENTER" prefHeight="84.0" prefWidth="642.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>

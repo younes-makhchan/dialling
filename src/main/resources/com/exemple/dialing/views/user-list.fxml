@@ -8,11 +8,25 @@
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.exemple.dialing.presentation.controllers.UserListController"
-            prefHeight="400.0" prefWidth="600.0">
-    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: #2E3B4E;">
+
+    <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                prefHeight="400.0" prefWidth="600.0"
+                xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+                style="-fx-background-color: #2E3B4E;">
+
         <children>
-            <ListView fx:id="userListView" layoutX="50.0" layoutY="50.0" prefHeight="300.0" prefWidth="500.0" />
-            <Button fx:id="startChatButton" layoutX="250.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleStartChat" text="Chating">
+            <ListView fx:id="userListView" layoutX="50.0" layoutY="50.0" prefHeight="300.0" prefWidth="500.0"
+                      style="-fx-background-color: #37474F; -fx-text-fill: white; -fx-font-size: 16px;" />
+            <Button layoutX="200.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleLogout" text="Logout"
+                    style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 14px;">
+                <font>
+                    <Font size="14.0" />
+                </font>
+            </Button>
+            <Button fx:id="startChatButton" layoutX="300.0" layoutY="360.0" mnemonicParsing="false" onAction="#handleStartChat" text="Chating!!"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;">
                 <font>
                     <Font size="14.0" />
                 </font>

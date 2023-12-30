@@ -1,6 +1,7 @@
 package com.exemple.dialing.presentation.controllers;
 
 import com.exemple.dialing.dao.entities.User;
+import com.exemple.dialing.presentation.AppNavigator;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,7 +32,7 @@ public class ChatController {
                     setStyle("");
                 } else {
                     setText(item);
-                    if (item.startsWith("Me:")) {
+                    if (item.startsWith("Me :")) {
                         setStyle("-fx-text-fill: green; -fx-font-size: 18; -fx-alignment: CENTER-RIGHT;");
                     } else {
                         setStyle("-fx-text-fill: blue; -fx-font-size: 18; -fx-alignment: CENTER-LEFT;");
@@ -76,9 +77,12 @@ public class ChatController {
     private void sendMessageUI(String message) {
         // Assuming you have a service layer to handle message sending
         String sender = "Me";
-        String formattedMessage = sender + ": " + message;
+        String formattedMessage = sender + " : " + message;
         chatMessages.add(formattedMessage);
     }
-
+    @FXML
+    private void goBackListUsers(ActionEvent event) {
+        AppNavigator.loadUserListScene(authenticatedUser);
+    }
 }
 

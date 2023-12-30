@@ -53,5 +53,8 @@ public class UserListController {
             System.out.println("Please select a user to start the chat.");
         }
     }
-
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        AppNavigator.loadLoginScene();
+    }
 }
