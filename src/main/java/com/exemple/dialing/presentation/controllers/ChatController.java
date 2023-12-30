@@ -8,6 +8,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 public class ChatController {
 
     @FXML private TextField messageField;
@@ -23,25 +28,27 @@ public class ChatController {
     private void handleSend(ActionEvent event) {
         String message = messageField.getText().trim();
         if (!message.isEmpty()) {
-            String messageTosend=selectedUser+"=>"+message;
+            String messageToSend=selectedUser+"=>"+message;
             // Implement your message sending logic here
-//            ClientController.sendMessage(messageTosend);
+            //ClientController.sendMessage(messageToSend);
             sendMessageUI(message);
-
-
             // Clear the message field after sending
             messageField.clear();
         }
     }
+
     public void  listenForMessageUI(){
         ClientController.listenForMessage((String messageReceived)->{
-
+            String receiverUser = selectedUser.getUsername();
+            String formattedReceivedMessage = receiverUser + " : " + messageReceived;
+            chatMessages.add(formattedReceivedMessage);
         });
     }
 
     public void setSelectedUser(User selectedUser) {
         this.selectedUser = selectedUser;
     }
+
     private void sendMessageUI(String message) {
         // Assuming you have a service layer to handle message sending
         String sender = "Me";
