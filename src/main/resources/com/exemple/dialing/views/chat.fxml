@@ -8,27 +8,26 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="644.0" prefWidth="642.0"
-            xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.exemple.dialing.presentation.controllers.ChatController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="644.0" prefWidth="642.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.exemple.dialing.presentation.controllers.ChatController">
    <top>
-      <Button onAction="#goBackListUsers" mnemonicParsing="false" prefHeight="30.0" prefWidth="60.0" text="Back">
+      <Button mnemonicParsing="false" onAction="#goBackListUsers" prefHeight="30.0" prefWidth="76.0" style="-fx-background-color: lightgreen;" text="&lt;- Back">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>
+         <BorderPane.margin>
+            <Insets left="10.0" top="10.0" />
+         </BorderPane.margin>
       </Button>
    </top>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="84.0" prefWidth="642.0" spacing="20.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" prefHeight="68.0" prefWidth="642.0" spacing="20.0" BorderPane.alignment="CENTER">
          <children>
             <TextField fx:id="messageField" prefHeight="45.0" prefWidth="487.0" promptText="Your message">
                <font>
                   <Font size="16.0" />
                </font>
             </TextField>
-            <Button onAction="#handleSend" mnemonicParsing="false" prefHeight="38.0" prefWidth="73.0" text="Send">
+            <Button mnemonicParsing="false" onAction="#handleSend" prefHeight="38.0" prefWidth="73.0" text="Send">
                <font>
                   <Font name="System Bold" size="16.0" />
                </font>
@@ -37,7 +36,7 @@
       </HBox>
    </bottom>
    <center>
-      <ListView fx:id="chatListView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
+      <ListView fx:id="chatListView" prefHeight="520.0" prefWidth="622.0" style="-fx-background-color: black;" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>

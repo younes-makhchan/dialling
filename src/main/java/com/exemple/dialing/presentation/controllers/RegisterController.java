@@ -13,10 +13,6 @@ import javafx.scene.control.TextField;
 public class RegisterController {
 
     @FXML private TextField usernameField;
-    @FXML private TextField firstnameField;
-    @FXML private TextField lastnameField;
-    @FXML private TextField phoneField;
-    @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
     @FXML
