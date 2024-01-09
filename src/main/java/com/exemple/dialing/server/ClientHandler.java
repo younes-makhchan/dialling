@@ -48,12 +48,15 @@ public class ClientHandler implements  Runnable{
                 int receiverUserId=Integer.parseInt(splits[0]);
                 User receiverUser=iServiceUser.getUserbyId(receiverUserId);
                 String messageFromSender=splits[1];
+                System.out.println("message :"+messageFromSender);
                 if(messageFromSender.equals("$$disconnect$$")){
                     disconnectClient();
                 }else if(messageFromSender.equals("$$loadMessages$$")){
                         loadOldMessages(receiverUserId);
                 } else if (messageFromSender.equals("$$LoadOnlineUsers$$")) {
                     loadOnlineUsers();
+                } else if (messageFromSender.equals("$$$stop$$$")) {
+                    sendMessage(this.user,this.user,"$$$stop$$$");
                 } else{
                     //add message
 

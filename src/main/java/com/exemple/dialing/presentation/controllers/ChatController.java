@@ -22,6 +22,7 @@ public class ChatController {
 
     @FXML
     private void initialize() {
+        shouldContinueListening=true;
         chatMessages = FXCollections.observableArrayList();
         chatListView.setItems(chatMessages);
         // Set a custom cell factory to control the appearance of each item in the ListView
@@ -97,8 +98,8 @@ public class ChatController {
     }
     @FXML
     private void goBackListUsers(ActionEvent event) {
-        shouldContinueListening = false;
-
+        shouldContinueListening=false;
+        ClientController.sendMessage(selectedUser.getIdUser(),"$$$stop$$$");
         AppNavigator.loadUserListScene(authenticatedUser);
     }
 }

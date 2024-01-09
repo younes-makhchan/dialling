@@ -44,7 +44,6 @@ public class UserListController {
         // Get the list of all users
         ObservableList<User> userList = FXCollections.observableArrayList(users);
         List<String> usernames=loadOnlineUsers();
-
         // Set the cell factory to customize the appearance of each cell
         userListView.setCellFactory(param -> new ListCell<>() {
             @Override

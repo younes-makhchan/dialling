@@ -20,7 +20,6 @@ public class ClientController {
     private  static PrintWriter pr;
     private static BufferedReader bufferedReader;
     private static User user;
-    private static  boolean shouldContinueListening = true;
 
     public ClientController(Socket socket, User user){
         try{
@@ -47,15 +46,16 @@ public class ClientController {
             @Override
             public void run() {
                 String msgReceived;
-                while(socket.isConnected()&& shouldContinueListening){
+                while(socket.isConnected()){
                     try{
                         msgReceived=bufferedReader.readLine();
-                        System.out.println(msgReceived);
                         String [] splits=msgReceived.split("=>");
+
                         String usernameSender =splits[0];
                         String messageReceived = splits[1];
                         Boolean stopWhile=processMessage.apply(usernameSender,messageReceived);
                         if(stopWhile){
+
                             break;
                         }
                     }catch (IOException e){
@@ -81,23 +81,23 @@ public class ClientController {
         }
     }
     public  static  List<String> loadOnlineUsers(){
+
         List<String> usernames=new ArrayList<>();
         String msgReceived= null;
         try {
             sendMessagePrivate("0=>$$LoadOnlineUsers$$");
-
             msgReceived = bufferedReader.readLine();
-            System.out.println(msgReceived);
+
             String [] splits=msgReceived.split("=>");
             String usernameSender =splits[0];
             String messageReceived = splits[1];
             String [] table=messageReceived.split("%/0%");
             usernames.addAll(Arrays.asList(table));
-            System.out.println("usernames "+usernames);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return usernames;
+
 
     }
     private  static void sendMessagePrivate(String message){
@@ -118,47 +118,6 @@ public class ClientController {
 
     };
 
-//    public static void main(String[] args) throws IOException {
-//        Scanner scanner=new Scanner(System.in);
-//        User user=null;
-//        do{
-//            System.out.println("Welcome to dialing app: \n 1-login ,2-register ");
-//            int choice=scanner.nextInt();
-//            scanner.nextLine();
-//            if(choice==1){
-//                System.out.println("give me ur username :");
-//                String usernameLogin=scanner.nextLine();
-//                System.out.println("give me ur password :");
-//                String passwordLogin=scanner.nextLine();
-//                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
-//                user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
-//                if(user==null){
-//                    System.out.println("wrong password or username");
-//                }else{
-//                    System.out.println("Login success");
-//                }
-//            }else{
-//                System.out.println("give me ur username :");
-//                String usernameLogin=scanner.nextLine();
-//                System.out.println("give me ur password");
-//                String passwordLogin=scanner.nextLine();
-//                IServiceUserImpl iServiceUser =new  IServiceUserImpl(new UserDaoImpl());
-//                if(iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin)==null){
-//                    user=new User(usernameLogin,passwordLogin);
-//                    iServiceUser.addUser(user);
-//                    user=iServiceUser.findUserbyNameAndPassword(usernameLogin,passwordLogin);
-//                    System.out.println("Registration sucess");
-//                }else{
-//                    System.out.println("user already exists with that username");
-//                }
-//            }
-//        }while (user==null);
-//
-//        Socket socket=new Socket("localhost",9090);
-//        ClientController client=new ClientController(socket,user);
-//        client.listenForMessage();
-//        client.sendMessage();
-//    }
     public  static void  socketConnect(User authenticateduser){
         Socket socket= null;
         try {
